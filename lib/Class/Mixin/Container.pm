@@ -71,7 +71,21 @@ Class::Mixin::Container is a minimalistic container stuff.
 
 This module is Mixin class.
 
-It is useful to create web application framework.
+It is useful to create application framework.
+
+=head1 EXPORTABLE METHODS
+
+=over 4
+
+=item MyApp->register($name, $code)
+
+This method is a class method. This method register the $code as $name.
+
+=item $app->get($name)
+
+This is a instance method. This method creates the instance of $name from $code.
+
+=back
 
 =head1 COOKBOOK
 
@@ -98,13 +112,13 @@ You can alias to import the method name.
 
     use Class::Mixin::Container 'register', 'get' => { -as => 'component' };
 
-For more details, please look the L<Sub::Exporter> documents.
-
 =head1 AUTHOR
 
 Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF GMAIL COME<gt>
 
 =head1 SEE ALSO
+
+L<Object::Container>, L<Object::Registrar>
 
 =head1 LICENSE
 

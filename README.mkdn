@@ -1,20 +1,85 @@
 # NAME
 
-Class::Mixin::Container -
+Class::Mixin::Container - Minimalistic container mixin
 
 # SYNOPSIS
 
-  use Class::Mixin::Container;
+    # make your container class
+    package MyApp;
+    use Class::Mixin::Container qw/register get/;
+
+    sub new {
+        my $class = shift;
+        my %args = @_ == 1 ? %{$_[0]}  : @_;
+        bless { %args }, $class;
+    }
+
+    __PACKAGE__->register(cookie_jar => sub {
+        $self->cookie_jar
+    });
+
+    __PACKAGE__->register('LWP::UserAgent' => sub {
+        my $self = shift;
+        LWP::UserAgent->new(cookie_jar => $self->cookie_jar);
+    });
+
+    # in your application
+    package main;
+
+    my $container = MyApp->new;
+    my $ua = $container->get('LWP::UserAgent');
 
 # DESCRIPTION
 
-Class::Mixin::Container is
+Class::Mixin::Container is a minimalistic container stuff.
+
+This module is Mixin class.
+
+It is useful to create application framework.
+
+# EXPORTABLE METHODS
+
+- MyApp->register($name, $code)
+
+This method is a class method. This method register the $code as $name.
+
+- $app->get($name)
+
+This is a instance method. This method creates the instance of $name from $code.
+
+# COOKBOOK
+
+## HOW DO YOU USE SINGLETON?
+
+The great [Class::Singleton](http://search.cpan.org/perldoc?Class::Singleton) is available on CPAN.
+
+    package MyApp;
+    use base qw/Class::Singleton/;
+    use Class::Mixin::Container qw/register get/;
+
+    sub _new_instance { bless { }, shift }
+
+    package main;
+    
+
+    my $app = MyApp->instance;
+    $app->register('Foo' => sub { Foo->new });
+    ...
+    my $foo = $app->get('Foo');
+
+## HOW DO YOU RESOLVE METHOD NAME CONFLICTION?
+
+You can alias to import the method name.
+
+    use Class::Mixin::Container 'register', 'get' => { -as => 'component' };
 
 # AUTHOR
 
 Tokuhiro Matsuno <tokuhirom AAJKLFJEF GMAIL COM>
 
 # SEE ALSO
+
+[Object::Container](http://search.cpan.org/perldoc?Object::Container), [Object::Registrar](http://search.cpan.org/perldoc?Object::Registrar)
 
 # LICENSE
 
