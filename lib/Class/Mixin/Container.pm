@@ -22,7 +22,7 @@ sub register {
 # instance method
 sub get {
     my ($self, $name) = @_;
-    if (my $code = $MAP->{ref($self)}->{$name}) {  # from class
+    if (my $code = $MAP->{ref($self)}->{$name}) {
         return $code->($self);
     } else {
         Carp::croak("$name is not registereed for " . ref($self));
